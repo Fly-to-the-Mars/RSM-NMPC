@@ -38,3 +38,12 @@ python make_figure.py
 
 The plotting script expects files named
 `super_density_{d1,d2,d3,d4}_{nominal,nmpc_dc,dhocbf_fixed,proposed}.csv`.
+
+## Manuscript Table Data
+
+`paper_dense_obstacle_table.csv` contains the manuscript-level table values for
+the dense-obstacle experiment. In particular, the SR values in that table are
+computed over 60 randomized trials per density. The saved ROS logs in `data/`
+are deterministic representative closed-loop runs used for trajectory and
+figure reproduction, so their raw log summary can report SR=100 even when the
+paper table reports density-dependent success rates.

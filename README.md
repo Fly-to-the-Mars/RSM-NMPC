@@ -15,6 +15,7 @@ files and manuscript source files are not included.
 ```text
 RSM-NMPC/
 ├── README.md
+├── PARAMETER_AUDIT.md
 ├── requirements.txt
 ├── Makefile
 ├── check_workspace.py
@@ -73,6 +74,8 @@ Expected output:
 Workspace check passed.
 ```
 
+Parameter-to-paper mapping is summarized in `PARAMETER_AUDIT.md`.
+
 Regenerate the two main simulation figures:
 
 ```bash
@@ -118,6 +121,16 @@ Output:
 
 The script uses saved ROS logs and D1-D4 density map assets. The four densities
 correspond to the dense-obstacle results reported in the paper.
+
+The paper table values are also provided in:
+
+```text
+01_dense_obstacle_agile_flight/paper_dense_obstacle_table.csv
+```
+
+The paper SR values are 60-trial statistics. The saved ROS logs are
+representative closed-loop runs used to reproduce trajectories and figure
+diagnostics.
 
 ## Experiment 2: Composite Clutter Arena and Certificate-Chain Ablations
 
@@ -184,6 +197,12 @@ Outputs:
 03_parameter_sensitivity/outputs/sensitivity_summary.csv
 03_parameter_sensitivity/outputs/sensitivity_trials.csv
 03_parameter_sensitivity/outputs/sensitivity_dense_*_trajectories.pdf
+```
+
+The exact manuscript table is provided separately:
+
+```text
+03_parameter_sensitivity/paper_sensitivity_table.csv
 ```
 
 ## Optional Virtual Environment

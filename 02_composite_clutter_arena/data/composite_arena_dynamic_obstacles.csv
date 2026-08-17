@@ -1,0 +1,4 @@
+name,progress_y_m,altitude_m,radius_m,x_start_m,x_end_m,t_start_s,t_end_s,avoidance_direction
+M1,14.8,1.5,0.22,-1.6,1.6,3.5,11.5,-1.0
+M2,24.8,1.5,0.23,-1.4,0.2,8.0,12.0,-1.0
+M3,34.5,1.55,0.22,0.8,-0.4,11.0,15.0,1.0

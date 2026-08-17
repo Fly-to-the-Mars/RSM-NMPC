@@ -35,7 +35,7 @@ class ControllerConfig:
     body_constraint_samples: int = 16
     gamma1: float = 0.30
     gamma2: float = 0.35
-    lse_lambda: float = 30.0
+    lse_lambda: float = 10.0
     obs_lse_lambda: float = 24.0
     confidence_inflation: float = 0.045
     horizon_inflation_growth: float = 0.004
@@ -211,9 +211,9 @@ def sensitivity_groups(sim: SimConfig) -> Dict[str, List[ControllerConfig]]:
             replace(full, key="N12", label="N=12", horizon=12, ipopt_max_iter=110),
         ],
         "lambda": [
+            replace(full, key="lambda5", label="lambda=5", lse_lambda=5.0),
             replace(full, key="lambda10", label="lambda=10", lse_lambda=10.0),
             replace(full, key="lambda20", label="lambda=20", lse_lambda=20.0),
-            replace(full, key="lambda30", label="lambda=30", lse_lambda=30.0),
         ],
         "gamma1": [
             replace(full, key="gamma01", label="gamma1=0.1", gamma1=0.10),

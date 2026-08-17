@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import csv
 import importlib.util
 from pathlib import Path
 import shutil
@@ -15,14 +16,17 @@ ROOT = Path(__file__).resolve().parent
 
 REQUIRED_PATHS = [
     ROOT / "README.md",
+    ROOT / "PARAMETER_AUDIT.md",
     ROOT / "requirements.txt",
     ROOT / "EXPERIMENT_INDEX.md",
     ROOT / "rsm_sim" / "nmpc.py",
     ROOT / "01_dense_obstacle_agile_flight" / "make_figure.py",
     ROOT / "01_dense_obstacle_agile_flight" / "super_density_ros_analysis.py",
+    ROOT / "01_dense_obstacle_agile_flight" / "paper_dense_obstacle_table.csv",
     ROOT / "02_composite_clutter_arena" / "make_figure.py",
     ROOT / "02_composite_clutter_arena" / "composite_arena_validation.py",
     ROOT / "03_parameter_sensitivity" / "run_parameter_sensitivity.py",
+    ROOT / "03_parameter_sensitivity" / "paper_sensitivity_table.csv",
     ROOT / "sim_validation" / "nmpc.py",
     ROOT / "ros1_ws" / "src" / "tv_dhocbf_super" / "package.xml",
     ROOT / "ros1_ws" / "src" / "SUPER" / "mars_uav_sim" / "mars_quadrotor_msgs" / "package.xml",
@@ -52,6 +56,44 @@ def parse_args() -> argparse.Namespace:
         help="also require roslaunch and catkin_make to be visible on PATH",
     )
     return parser.parse_args()
+
+
+def read_csv_rows(path: Path) -> list[dict[str, str]]:
+    with path.open(newline="") as handle:
+        return list(csv.DictReader(handle))
+
+
+def check_paper_tables(errors: list[str]) -> None:
+    dense_table = ROOT / "01_dense_obstacle_agile_flight" / "paper_dense_obstacle_table.csv"
+    sensitivity_table = ROOT / "03_parameter_sensitivity" / "paper_sensitivity_table.csv"
+    composite_success = ROOT / "02_composite_clutter_arena" / "data" / "composite_arena_success_summary.csv"
+
+    if dense_table.exists():
+        rows = read_csv_rows(dense_table)
+        rsm_aggregate = [
+            r for r in rows if r.get("density") == "Aggregate" and r.get("controller") == "RSM-NMPC"
+        ]
+        if not rsm_aggregate or abs(float(rsm_aggregate[0].get("SR_%", "nan")) - 99.6) > 1e-6:
+            errors.append("paper dense-obstacle table does not contain Aggregate/RSM-NMPC SR=99.6")
+
+    if sensitivity_table.exists():
+        rows = read_csv_rows(sensitivity_table)
+        lambda_values = {r.get("parameter_value") for r in rows if r.get("sensitivity_group") == "lambda"}
+        if lambda_values != {"lambda=5", "lambda=10", "lambda=20"}:
+            errors.append("paper sensitivity table lambda group must be lambda=5, lambda=10, lambda=20")
+
+    if composite_success.exists():
+        rows = read_csv_rows(composite_success)
+        expected = {
+            "dhocbf_fixed": 9,
+            "super_style": 3,
+            "ego_style": 8,
+            "proposed": 19,
+        }
+        observed = {r.get("method"): int(float(r.get("success_count", "nan"))) for r in rows}
+        for method, count in expected.items():
+            if observed.get(method) != count:
+                errors.append(f"composite dynamic success count for {method} should be {count}/20")
 
 
 def main() -> int:
@@ -95,6 +137,8 @@ def main() -> int:
     for pkg in REQUIRED_PACKAGES:
         if not has_module(pkg):
             errors.append(f"missing Python package: {pkg}")
+
+    check_paper_tables(errors)
 
     roslaunch = shutil.which("roslaunch")
     catkin_make = shutil.which("catkin_make")

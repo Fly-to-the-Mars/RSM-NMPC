@@ -20,7 +20,7 @@ Outputs:
 - `outputs/sensitivity_summary.csv`
 - first-trial trajectory PDFs for each sensitivity group.
 
-The copied `sensitivity_summary.csv` and `sensitivity_trials.csv` in this
-directory are the existing generated records from the working tree and are kept
-as reference data.
-
+`paper_sensitivity_table.csv` contains the exact manuscript table values. The
+copied `sensitivity_summary.csv` and `sensitivity_trials.csv` are generated
+reference records from the lightweight simulator; new runs write fresh results
+to `outputs/` and may differ slightly with solver timing and random seeds.

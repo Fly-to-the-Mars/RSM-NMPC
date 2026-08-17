@@ -12,7 +12,14 @@ from typing import Dict, Iterable, List, Optional, Tuple
 
 import numpy as np
 
-REPO_ROOT = Path(__file__).resolve().parents[4]
+def find_repo_root(path: Path) -> Path:
+    for parent in [path.parent, *path.parents]:
+        if (parent / "sim_validation").is_dir() and (parent / "rsm_sim").is_dir():
+            return parent
+    return path.parents[4]
+
+
+REPO_ROOT = find_repo_root(Path(__file__).resolve())
 if str(REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(REPO_ROOT))
 

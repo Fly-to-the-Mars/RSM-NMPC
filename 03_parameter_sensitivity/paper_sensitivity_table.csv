@@ -1,0 +1,13 @@
+sensitivity_group,parameter_value,SR_%,min_distance_mean_m,min_distance_std_m,min_speed_mean_mps,min_speed_std_mps,compute_mean_ms,compute_std_ms
+horizon,N=4,75,0.23,0.04,1.48,0.15,5.2,0.8
+horizon,N=8,100,0.27,0.02,1.61,0.09,8.7,1.2
+horizon,N=12,100,0.28,0.02,1.65,0.12,15.3,2.1
+lambda,lambda=5,90,0.22,0.04,1.68,0.13,8.1,1.0
+lambda,lambda=10,100,0.27,0.02,1.61,0.09,8.7,1.2
+lambda,lambda=20,100,0.29,0.02,1.53,0.14,9.0,1.3
+gamma1,gamma1=0.1,100,0.30,0.02,1.22,0.15,8.3,1.1
+gamma1,gamma1=0.3,100,0.27,0.02,1.61,0.09,8.7,1.2
+gamma1,gamma1=0.5,80,0.22,0.04,1.75,0.13,9.2,1.4
+gp_length,ell=0.2m,85,0.20,0.05,1.58,0.14,9.5,1.5
+gp_length,ell=0.4m,100,0.27,0.02,1.62,0.13,8.7,1.2
+gp_length,ell=0.8m,95,0.32,0.03,1.35,0.15,8.0,1.0

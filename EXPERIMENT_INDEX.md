@@ -20,6 +20,8 @@ Core files:
   `sim_dense_density_sweep.pdf`.
 - `data/super_density_*.csv`: saved closed-loop logs for D1--D4 and the
   compared controllers.
+- `paper_dense_obstacle_table.csv`: manuscript-level dense-obstacle table
+  values; SR is from 60 randomized trials per density.
 - `ros_assets/scripts/run_super_density_sweep.sh`: optional ROS/SUPER helper
   for rerunning the density sweep when the full ROS workspace is available.
 - `ros_assets/config/`: controller/map parameter files for D1--D4.
@@ -79,8 +81,10 @@ Main entry:
 Core files:
 - `run_parameter_sensitivity.py`: command-line wrapper around the shared
   simulation package for regenerating the parameter-sensitivity CSVs.
-- `sensitivity_summary.csv`: reference summary values used by the paper table.
-- `sensitivity_trials.csv`: per-trial reference values.
+- `paper_sensitivity_table.csv`: exact manuscript table values.
+- `sensitivity_summary.csv`: generated lightweight-simulator reference
+  summary.
+- `sensitivity_trials.csv`: generated lightweight-simulator reference trials.
 
 Expected outputs:
 - `outputs/sensitivity_summary.csv`
@@ -99,6 +103,8 @@ Core files:
 - `scenarios.py`: stochastic and structured scenario builders.
 - `run_experiments.py`: shared batch-run helpers used by the sensitivity
   experiment.
+- `PARAMETER_AUDIT.md`: mapping from manuscript parameters to release code and
+  data files.
 
 ## Optional ROS1 Runtime Package
 
@@ -117,7 +123,10 @@ workspace.
 ## Reproducibility Notes
 
 The first two experiments can be regenerated directly from the saved logs and
-assets in this release folder. The optional ROS/SUPER rerun path in
-`ros1_ws/` still requires a working ROS1 and SUPER/MARSIM workspace. The
-parameter-sensitivity experiment is self-contained but can be computationally
-expensive when using the full number of trials from the paper.
+assets in this release folder. For the dense-obstacle experiment, the saved
+logs are representative closed-loop ROS runs, while
+`paper_dense_obstacle_table.csv` records the 60-trial manuscript table. The
+optional ROS/SUPER rerun path in `ros1_ws/` still requires a working ROS1 and
+SUPER/MARSIM workspace. The parameter-sensitivity experiment is self-contained
+but can be computationally expensive when using the full number of trials from
+the paper.
