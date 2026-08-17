@@ -1,0 +1,64 @@
+<launch>
+  <arg name="rviz" default="true" />
+  <arg name="semantic_markers" default="true" />
+  <arg name="semantic_labels" default="false" />
+  <arg name="controller" default="proposed" />
+  <arg name="log_csv" default="" />
+  <arg name="rsm_gamma0" default="0.38" />
+  <arg name="rsm_gamma_clearance_gain" default="0.42" />
+  <arg name="rsm_v_pos" default="0.020" />
+  <arg name="rsm_v_vel" default="0.0035" />
+  <arg name="visual_detail" default="clean" />
+  <arg name="show_perception_markers" default="true" />
+  <arg name="show_prediction_tube" default="true" />
+  <arg name="show_certificate_bars" default="true" />
+  <arg name="show_nearest_clearance" default="true" />
+  <arg name="reserve_visual_gain" default="4.0" />
+  <arg name="reserve_visual_max" default="1.10" />
+
+  <include file="$(find tv_dhocbf_super)/launch/tv_dhocbf_click.launch">
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="controller" value="$(arg controller)" />
+    <arg name="log_csv" value="$(arg log_csv)" />
+    <arg name="visual_detail" value="$(arg visual_detail)" />
+    <arg name="show_perception_markers" value="$(arg show_perception_markers)" />
+    <arg name="show_prediction_tube" value="$(arg show_prediction_tube)" />
+    <arg name="show_certificate_bars" value="$(arg show_certificate_bars)" />
+    <arg name="show_nearest_clearance" value="$(arg show_nearest_clearance)" />
+    <arg name="reserve_visual_gain" value="$(arg reserve_visual_gain)" />
+    <arg name="reserve_visual_max" value="$(arg reserve_visual_max)" />
+    <arg name="sim_config" value="tvdhocbf_rescue_arena.yaml" />
+    <arg name="goal_x" value="0.0" />
+    <arg name="goal_y" value="42.0" />
+    <arg name="goal_z" value="1.5" />
+    <arg name="control_rate" value="12.0" />
+    <arg name="visual_rate" value="15.0" />
+    <arg name="nmpc_dt" value="0.09" />
+    <arg name="local_range" value="7.5" />
+    <arg name="path_margin" value="0.30" />
+    <arg name="lookahead" value="2.1" />
+    <arg name="global_path_extent" value="9.0" />
+    <arg name="v_max" value="5.0" />
+    <arg name="a_max" value="8.0" />
+    <arg name="confidence_inflation" value="0.040" />
+    <arg name="horizon_inflation_growth" value="0.003" />
+    <arg name="rsm_base_margin" value="0.010" />
+    <arg name="rsm_tau" value="0.035" />
+    <arg name="rsm_brake_gain" value="0.040" />
+    <arg name="rsm_terminal_margin" value="0.010" />
+    <arg name="rsm_gamma0" value="$(arg rsm_gamma0)" />
+    <arg name="rsm_gamma_clearance_gain" value="$(arg rsm_gamma_clearance_gain)" />
+    <arg name="rsm_guard_trigger" value="0.05" />
+    <arg name="rsm_v_pos" value="$(arg rsm_v_pos)" />
+    <arg name="rsm_v_vel" value="$(arg rsm_v_vel)" />
+  </include>
+
+  <node if="$(arg semantic_markers)"
+        pkg="tv_dhocbf_super"
+        type="rescue_arena_markers.py"
+        name="rescue_arena_markers"
+        output="screen">
+    <param name="frame_id" value="world" />
+    <param name="show_labels" value="$(arg semantic_labels)" />
+  </node>
+</launch>

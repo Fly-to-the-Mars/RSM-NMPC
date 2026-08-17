@@ -1,0 +1,61 @@
+<launch>
+  <arg name="rviz" default="true" />
+  <arg name="density" default="d3" doc="d1, d2, d3, or d4" />
+  <arg name="controller" default="proposed" />
+  <arg name="log_csv" default="" />
+  <arg name="forest_markers" default="true" />
+  <arg name="path_margin" default="0.30" />
+  <arg name="lookahead" default="2.10" />
+  <arg name="local_range" default="7.8" />
+  <arg name="v_max" default="5.4" />
+  <arg name="rsm_gamma0" default="0.46" />
+  <arg name="rsm_gamma_clearance_gain" default="0.42" />
+  <arg name="rsm_guard_trigger" default="0.10" />
+  <arg name="rsm_guard_brake_gain" default="1.45" />
+
+  <include file="$(find tv_dhocbf_super)/launch/tv_dhocbf_click.launch">
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="rviz_config" value="$(find tv_dhocbf_super)/rviz/yopo_forest.rviz" />
+    <arg name="controller" value="$(arg controller)" />
+    <arg name="log_csv" value="$(arg log_csv)" />
+    <arg name="sim_config" value="tvdhocbf_yopo_forest_$(arg density).yaml" />
+    <arg name="goal_x" value="0.0" />
+    <arg name="goal_y" value="45.0" />
+    <arg name="goal_z" value="1.5" />
+    <arg name="control_rate" value="10.0" />
+    <arg name="visual_rate" value="15.0" />
+    <arg name="nmpc_dt" value="0.10" />
+    <arg name="local_range" value="$(arg local_range)" />
+    <arg name="near_ignore" value="0.62" />
+    <arg name="max_obstacles" value="16" />
+    <arg name="obstacle_grid" value="0.46" />
+    <arg name="obstacle_radius" value="0.14" />
+    <arg name="path_margin" value="$(arg path_margin)" />
+    <arg name="lookahead" value="$(arg lookahead)" />
+    <arg name="path_boundary_padding" value="1.0" />
+    <arg name="global_path_extent" value="12.0" />
+    <arg name="max_cloud_points" value="4200" />
+    <arg name="max_global_cloud_points" value="160000" />
+    <arg name="v_max" value="$(arg v_max)" />
+    <arg name="a_max" value="8.2" />
+    <arg name="confidence_inflation" value="0.042" />
+    <arg name="horizon_inflation_growth" value="0.003" />
+    <arg name="rsm_reference_shaping" value="true" />
+    <arg name="rsm_base_margin" value="0.012" />
+    <arg name="rsm_tau" value="0.034" />
+    <arg name="rsm_brake_gain" value="0.038" />
+    <arg name="rsm_terminal_margin" value="0.010" />
+    <arg name="rsm_gamma0" value="$(arg rsm_gamma0)" />
+    <arg name="rsm_gamma_clearance_gain" value="$(arg rsm_gamma_clearance_gain)" />
+    <arg name="rsm_guard_trigger" value="$(arg rsm_guard_trigger)" />
+    <arg name="rsm_guard_brake_gain" value="$(arg rsm_guard_brake_gain)" />
+  </include>
+
+  <node if="$(arg forest_markers)"
+        pkg="tv_dhocbf_super"
+        type="yopo_forest_markers.py"
+        name="yopo_forest_markers"
+        output="screen">
+    <param name="density" value="$(arg density)" />
+  </node>
+</launch>

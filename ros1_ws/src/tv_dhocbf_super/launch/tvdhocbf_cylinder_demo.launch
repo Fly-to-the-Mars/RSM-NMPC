@@ -1,0 +1,36 @@
+<launch>
+  <arg name="rviz" default="true" />
+  <arg name="scenario" default="dense" doc="dense, narrow, forest, super_forest, paper_narrow_gap" />
+  <arg name="controller" default="proposed" />
+  <arg name="mode" default="online" doc="online or compare" />
+  <arg name="rate" default="6.0" />
+  <arg name="perception" default="true" />
+  <arg name="path_margin" default="0.18" />
+  <arg name="sensor_range" default="6.5" />
+  <arg name="sensor_fov_deg" default="360.0" />
+  <arg name="max_obstacles" default="28" />
+  <arg name="seed" default="1000" />
+
+  <node pkg="tv_dhocbf_rviz"
+        type="rviz_sim_node.py"
+        name="tv_dhocbf_rviz_sim"
+        output="screen">
+    <param name="scenario" value="$(arg scenario)" />
+    <param name="controller" value="$(arg controller)" />
+    <param name="mode" value="$(arg mode)" />
+    <param name="rate" value="$(arg rate)" />
+    <param name="perception" value="$(arg perception)" />
+    <param name="path_margin" value="$(arg path_margin)" />
+    <param name="sensor_range" value="$(arg sensor_range)" />
+    <param name="sensor_fov_deg" value="$(arg sensor_fov_deg)" />
+    <param name="max_obstacles" value="$(arg max_obstacles)" />
+    <param name="seed" value="$(arg seed)" />
+  </node>
+
+  <node if="$(arg rviz)"
+        pkg="rviz"
+        type="rviz"
+        name="tvdhocbf_cylinder_rviz"
+        args="-d $(find tv_dhocbf_rviz)/rviz/tv_dhocbf.rviz"
+        output="log" />
+</launch>

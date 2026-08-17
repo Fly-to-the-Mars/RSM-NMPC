@@ -1,0 +1,13 @@
+__pycache__/
+*.pyc
+.venv/
+
+# Generated outputs kept local during reviewer runs.
+outputs/
+*/outputs/
+
+# Optional ROS build products.
+ros1_ws/build/
+ros1_ws/devel/
+ros1_ws/log/
+*.roslaunch.log

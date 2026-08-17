@@ -1,0 +1,119 @@
+<launch>
+  <arg name="rviz" default="true" />
+  <arg name="controller" default="proposed" />
+  <arg name="log_csv" default="" />
+  <arg name="config_file" default="$(find sensor_simulator)/config/tvdhocbf_complex_forest.yaml" />
+  <arg name="tree_dist" default="5.2" />
+  <arg name="seed" default="7" />
+  <arg name="goal_x" default="0.0" />
+  <arg name="goal_y" default="45.0" />
+  <arg name="goal_z" default="1.5" />
+  <arg name="visual_detail" default="clean" />
+  <arg name="show_perception_markers" default="true" />
+  <arg name="show_prediction_tube" default="true" />
+  <arg name="show_certificate_bars" default="true" />
+  <arg name="show_nearest_clearance" default="true" />
+  <arg name="reserve_visual_gain" default="4.0" />
+  <arg name="reserve_visual_max" default="1.10" />
+
+  <node pkg="sensor_simulator"
+        type="sensor_simulator"
+        name="yopo_sensor_simulator"
+        output="screen">
+    <param name="config_file" value="$(arg config_file)" />
+    <param name="tree_dist" value="$(arg tree_dist)" />
+    <param name="seed" value="$(arg seed)" />
+  </node>
+
+  <node pkg="tv_dhocbf_super"
+        type="yopo_native_drone.py"
+        name="yopo_native_drone"
+        output="screen">
+    <param name="init_x" value="0.0" />
+    <param name="init_y" value="-50.0" />
+    <param name="init_z" value="$(arg goal_z)" />
+    <param name="rate" value="100.0" />
+  </node>
+
+  <node pkg="tv_dhocbf_super"
+        type="yopo_topic_bridge.py"
+        name="yopo_topic_bridge"
+        output="screen">
+    <param name="max_lidar_points" value="9000" />
+  </node>
+
+  <node pkg="tv_dhocbf_super"
+        type="tv_dhocbf_super_node.py"
+        name="tv_dhocbf_super"
+        output="screen">
+    <param name="controller" value="$(arg controller)" />
+    <param name="max_obstacles" value="18" />
+    <param name="horizon" value="8" />
+    <param name="nmpc_dt" value="0.10" />
+    <param name="v_max" value="5.4" />
+    <param name="a_max" value="8.2" />
+    <param name="theta_max" value="3.2" />
+    <param name="omega_max" value="6.0" />
+    <param name="ipopt_max_iter" value="90" />
+    <param name="control_rate" value="10.0" />
+    <param name="visual_rate" value="15.0" />
+    <param name="goal_x" value="$(arg goal_x)" />
+    <param name="goal_y" value="$(arg goal_y)" />
+    <param name="goal_z" value="$(arg goal_z)" />
+    <param name="log_csv" value="$(arg log_csv)" />
+    <param name="show_uav_model" value="true" />
+    <param name="show_safety_envelope" value="true" />
+    <param name="visual_detail" value="$(arg visual_detail)" />
+    <param name="show_perception_markers" value="$(arg show_perception_markers)" />
+    <param name="show_prediction_tube" value="$(arg show_prediction_tube)" />
+    <param name="show_certificate_bars" value="$(arg show_certificate_bars)" />
+    <param name="show_nearest_clearance" value="$(arg show_nearest_clearance)" />
+    <param name="rsm_reference_shaping" value="true" />
+    <param name="local_range" value="8.0" />
+    <param name="near_ignore" value="0.62" />
+    <param name="obstacle_grid" value="0.44" />
+    <param name="obstacle_radius" value="0.16" />
+    <param name="path_margin" value="0.34" />
+    <param name="lookahead" value="2.1" />
+    <param name="path_boundary_padding" value="1.0" />
+    <param name="global_path_extent" value="12.0" />
+    <param name="max_cloud_points" value="5000" />
+    <param name="max_global_cloud_points" value="160000" />
+    <param name="max_visual_cloud_points" value="1100" />
+    <param name="perception_cloud_scale" value="0.085" />
+    <param name="reserve_visual_gain" value="$(arg reserve_visual_gain)" />
+    <param name="reserve_visual_max" value="$(arg reserve_visual_max)" />
+    <param name="guide_line_width" value="0.030" />
+    <param name="guide_line_alpha" value="0.36" />
+    <param name="executed_line_width" value="0.38" />
+    <param name="executed_line_alpha" value="1.0" />
+    <param name="confidence_inflation" value="0.042" />
+    <param name="horizon_inflation_growth" value="0.003" />
+    <param name="d_min" value="0.08" />
+    <param name="rho_b" value="0.008" />
+    <param name="body_shape_exponent" value="4.0" />
+    <param name="body_constraint_samples" value="16" />
+    <param name="gamma1" value="0.30" />
+    <param name="gamma2" value="0.20" />
+    <param name="rsm_gamma1" value="0.45" />
+    <param name="rsm_gamma2" value="0.70" />
+    <param name="rsm_base_margin" value="0.012" />
+    <param name="rsm_tau" value="0.034" />
+    <param name="rsm_brake_gain" value="0.038" />
+    <param name="rsm_terminal_margin" value="0.010" />
+    <param name="rsm_gamma_boundary_radius" value="0.18" />
+    <param name="rsm_gamma_boundary_samples" value="8" />
+    <param name="rsm_guard_trigger" value="0.08" />
+    <param name="rsm_guard_brake_gain" value="1.25" />
+    <param name="safety_slack_weight" value="50000.0" />
+    <param name="safety_slack_linear" value="200.0" />
+    <param name="safety_slack_max" value="0.08" />
+  </node>
+
+  <node if="$(arg rviz)"
+        pkg="rviz"
+        type="rviz"
+        name="yopo_native_forest_rviz"
+        args="-d $(find tv_dhocbf_super)/rviz/yopo_forest.rviz"
+        output="log" />
+</launch>

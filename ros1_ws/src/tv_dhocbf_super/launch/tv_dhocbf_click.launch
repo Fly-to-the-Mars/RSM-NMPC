@@ -1,0 +1,222 @@
+<launch>
+  <arg name="sim_config" default="click.yaml" />
+  <arg name="rviz" default="true" />
+  <arg name="rviz_config" default="$(find perfect_drone_sim)/rviz/top_down.rviz" />
+  <arg name="control_rate" default="8.0" />
+  <arg name="visual_rate" default="12.0" />
+  <arg name="controller" default="proposed" />
+  <arg name="max_obstacles" default="14" />
+  <arg name="horizon" default="8" />
+  <arg name="nmpc_dt" default="0.12" />
+  <arg name="v_max" default="4.0" />
+  <arg name="a_max" default="7.0" />
+  <arg name="theta_max" default="3.2" />
+  <arg name="omega_max" default="6.0" />
+  <arg name="ipopt_max_iter" default="90" />
+  <arg name="ipopt_max_cpu_time" default="0.08" />
+  <arg name="goal_x" default="10.0" />
+  <arg name="goal_y" default="0.0" />
+  <arg name="goal_z" default="1.5" />
+  <arg name="log_csv" default="" />
+  <arg name="show_uav_model" default="true" />
+  <arg name="show_safety_envelope" default="true" />
+  <arg name="visual_detail" default="clean" />
+  <arg name="show_perception_markers" default="true" />
+  <arg name="show_prediction_tube" default="true" />
+  <arg name="show_certificate_bars" default="true" />
+  <arg name="show_nearest_clearance" default="true" />
+  <arg name="show_ground_plane" default="true" />
+  <arg name="ground_center_x" default="0.0" />
+  <arg name="ground_center_y" default="-2.5" />
+  <arg name="ground_size_x" default="18.0" />
+  <arg name="ground_size_y" default="112.0" />
+  <arg name="ground_alpha" default="0.58" />
+  <arg name="guide_line_width" default="0.055" />
+  <arg name="guide_line_alpha" default="0.58" />
+  <arg name="executed_line_width" default="0.32" />
+  <arg name="executed_line_alpha" default="1.0" />
+  <arg name="rsm_reference_shaping" default="false" />
+  <arg name="rsm_reference_shaping_gain" default="0.20" />
+  <arg name="rsm_reference_shaping_influence" default="2.10" />
+  <arg name="rsm_reference_shaping_max_shift" default="0.75" />
+  <arg name="uav_mesh_resource" default="package://perfect_drone_sim/meshes/yunque-M.dae" />
+  <arg name="uav_mesh_scale" default="1.0" />
+  <arg name="local_range" default="7.0" />
+  <arg name="near_ignore" default="0.62" />
+  <arg name="obstacle_grid" default="0.48" />
+  <arg name="obstacle_radius" default="0.10" />
+  <arg name="path_margin" default="0.34" />
+  <arg name="lookahead" default="1.6" />
+  <arg name="path_boundary_padding" default="1.5" />
+  <arg name="path_center_weight" default="0.0" />
+  <arg name="path_center_deadband" default="0.0" />
+  <arg name="baseline_path_margin_extra" default="0.0" />
+  <arg name="baseline_global_path_extent_extra" default="0.0" />
+  <arg name="baseline_detour_offset" default="0.0" />
+  <arg name="baseline_detour_min_points" default="0" />
+  <arg name="baseline_detour_center_width" default="0.55" />
+  <arg name="baseline_detour_center_min_points" default="0" />
+  <arg name="log_rsm_eval_certificate" default="true" />
+  <arg name="global_path_extent" default="8.0" />
+  <arg name="max_cloud_points" default="2400" />
+  <arg name="max_global_cloud_points" default="80000" />
+  <arg name="visual_global_cloud_points" default="220000" />
+  <arg name="max_visual_cloud_points" default="900" />
+  <arg name="perception_cloud_scale" default="0.070" />
+  <arg name="reserve_visual_gain" default="4.0" />
+  <arg name="reserve_visual_max" default="1.10" />
+  <arg name="confidence_inflation" default="0.045" />
+  <arg name="horizon_inflation_growth" default="0.004" />
+  <arg name="d_min" default="0.08" />
+  <arg name="rho_b" default="0.008" />
+  <arg name="body_shape_exponent" default="4.0" />
+  <arg name="body_constraint_samples" default="16" />
+  <arg name="gamma1" default="0.30" />
+  <arg name="gamma2" default="0.20" />
+  <arg name="rsm_gamma1" default="0.45" />
+  <arg name="rsm_gamma2" default="0.70" />
+  <arg name="rsm_base_margin" default="0.015" />
+  <arg name="rsm_tau" default="0.035" />
+  <arg name="rsm_brake_gain" default="0.045" />
+  <arg name="rsm_terminal_margin" default="0.010" />
+  <arg name="rsm_lambda" default="35.0" />
+  <arg name="rsm_gamma0" default="0.380" />
+  <arg name="rsm_gamma_clearance_gain" default="0.420" />
+  <arg name="rsm_gamma_boundary_radius" default="0.18" />
+  <arg name="rsm_gamma_boundary_samples" default="8" />
+  <arg name="rsm_guard_trigger" default="0.08" />
+  <arg name="rsm_guard_brake_gain" default="1.25" />
+  <arg name="rsm_v_pos" default="0.020" />
+  <arg name="rsm_v_vel" default="0.0035" />
+  <arg name="rsm_v_theta" default="0.000" />
+  <arg name="rsm_v_omega" default="0.000" />
+  <arg name="safety_slack_weight" default="50000.0" />
+  <arg name="safety_slack_linear" default="200.0" />
+  <arg name="safety_slack_max" default="0.08" />
+
+  <node pkg="perfect_drone_sim"
+        type="perfect_drone"
+        name="perfect_drone"
+        output="screen">
+    <param name="config_name" value="$(arg sim_config)" />
+  </node>
+
+  <node if="$(arg rviz)"
+        pkg="tv_dhocbf_super"
+        type="global_cloud_colorizer.py"
+        name="global_cloud_colorizer"
+        output="log">
+    <param name="input" value="/global_pc" />
+    <param name="output" value="/tvdhocbf_visual/global_pc_blue" />
+    <param name="max_points" value="$(arg visual_global_cloud_points)" />
+    <param name="z_min" value="-0.10" />
+    <param name="z_mid" value="1.55" />
+    <param name="z_max" value="3.80" />
+    <rosparam param="low_rgb">[174, 224, 250]</rosparam>
+    <rosparam param="mid_rgb">[70, 150, 222]</rosparam>
+    <rosparam param="high_rgb">[14, 66, 152]</rosparam>
+  </node>
+
+  <node pkg="tv_dhocbf_super"
+        type="tv_dhocbf_super_node.py"
+        name="tv_dhocbf_super"
+        output="screen">
+    <param name="controller" value="$(arg controller)" />
+    <param name="max_obstacles" value="$(arg max_obstacles)" />
+    <param name="horizon" value="$(arg horizon)" />
+    <param name="nmpc_dt" value="$(arg nmpc_dt)" />
+    <param name="v_max" value="$(arg v_max)" />
+    <param name="a_max" value="$(arg a_max)" />
+    <param name="theta_max" value="$(arg theta_max)" />
+    <param name="omega_max" value="$(arg omega_max)" />
+    <param name="ipopt_max_iter" value="$(arg ipopt_max_iter)" />
+    <param name="ipopt_max_cpu_time" value="$(arg ipopt_max_cpu_time)" />
+    <param name="control_rate" value="$(arg control_rate)" />
+    <param name="visual_rate" value="$(arg visual_rate)" />
+    <param name="goal_x" value="$(arg goal_x)" />
+    <param name="goal_y" value="$(arg goal_y)" />
+    <param name="goal_z" value="$(arg goal_z)" />
+    <param name="log_csv" value="$(arg log_csv)" />
+    <param name="show_uav_model" value="$(arg show_uav_model)" />
+    <param name="show_safety_envelope" value="$(arg show_safety_envelope)" />
+    <param name="visual_detail" value="$(arg visual_detail)" />
+    <param name="show_perception_markers" value="$(arg show_perception_markers)" />
+    <param name="show_prediction_tube" value="$(arg show_prediction_tube)" />
+    <param name="show_certificate_bars" value="$(arg show_certificate_bars)" />
+    <param name="show_nearest_clearance" value="$(arg show_nearest_clearance)" />
+    <param name="show_ground_plane" value="$(arg show_ground_plane)" />
+    <param name="ground_center_x" value="$(arg ground_center_x)" />
+    <param name="ground_center_y" value="$(arg ground_center_y)" />
+    <param name="ground_size_x" value="$(arg ground_size_x)" />
+    <param name="ground_size_y" value="$(arg ground_size_y)" />
+    <param name="ground_alpha" value="$(arg ground_alpha)" />
+    <param name="guide_line_width" value="$(arg guide_line_width)" />
+    <param name="guide_line_alpha" value="$(arg guide_line_alpha)" />
+    <param name="executed_line_width" value="$(arg executed_line_width)" />
+    <param name="executed_line_alpha" value="$(arg executed_line_alpha)" />
+    <param name="rsm_reference_shaping" value="$(arg rsm_reference_shaping)" />
+    <param name="rsm_reference_shaping_gain" value="$(arg rsm_reference_shaping_gain)" />
+    <param name="rsm_reference_shaping_influence" value="$(arg rsm_reference_shaping_influence)" />
+    <param name="rsm_reference_shaping_max_shift" value="$(arg rsm_reference_shaping_max_shift)" />
+    <param name="uav_mesh_resource" value="$(arg uav_mesh_resource)" />
+    <param name="uav_mesh_scale" value="$(arg uav_mesh_scale)" />
+    <param name="local_range" value="$(arg local_range)" />
+    <param name="near_ignore" value="$(arg near_ignore)" />
+    <param name="obstacle_grid" value="$(arg obstacle_grid)" />
+    <param name="obstacle_radius" value="$(arg obstacle_radius)" />
+    <param name="path_margin" value="$(arg path_margin)" />
+    <param name="lookahead" value="$(arg lookahead)" />
+    <param name="path_boundary_padding" value="$(arg path_boundary_padding)" />
+    <param name="path_center_weight" value="$(arg path_center_weight)" />
+    <param name="path_center_deadband" value="$(arg path_center_deadband)" />
+    <param name="baseline_path_margin_extra" value="$(arg baseline_path_margin_extra)" />
+    <param name="baseline_global_path_extent_extra" value="$(arg baseline_global_path_extent_extra)" />
+    <param name="baseline_detour_offset" value="$(arg baseline_detour_offset)" />
+    <param name="baseline_detour_min_points" value="$(arg baseline_detour_min_points)" />
+    <param name="baseline_detour_center_width" value="$(arg baseline_detour_center_width)" />
+    <param name="baseline_detour_center_min_points" value="$(arg baseline_detour_center_min_points)" />
+    <param name="log_rsm_eval_certificate" value="$(arg log_rsm_eval_certificate)" />
+    <param name="global_path_extent" value="$(arg global_path_extent)" />
+    <param name="max_cloud_points" value="$(arg max_cloud_points)" />
+    <param name="max_global_cloud_points" value="$(arg max_global_cloud_points)" />
+    <param name="max_visual_cloud_points" value="$(arg max_visual_cloud_points)" />
+    <param name="perception_cloud_scale" value="$(arg perception_cloud_scale)" />
+    <param name="reserve_visual_gain" value="$(arg reserve_visual_gain)" />
+    <param name="reserve_visual_max" value="$(arg reserve_visual_max)" />
+    <param name="confidence_inflation" value="$(arg confidence_inflation)" />
+    <param name="horizon_inflation_growth" value="$(arg horizon_inflation_growth)" />
+    <param name="d_min" value="$(arg d_min)" />
+    <param name="rho_b" value="$(arg rho_b)" />
+    <param name="body_shape_exponent" value="$(arg body_shape_exponent)" />
+    <param name="body_constraint_samples" value="$(arg body_constraint_samples)" />
+    <param name="gamma1" value="$(arg gamma1)" />
+    <param name="gamma2" value="$(arg gamma2)" />
+    <param name="rsm_gamma1" value="$(arg rsm_gamma1)" />
+    <param name="rsm_gamma2" value="$(arg rsm_gamma2)" />
+    <param name="rsm_base_margin" value="$(arg rsm_base_margin)" />
+    <param name="rsm_tau" value="$(arg rsm_tau)" />
+    <param name="rsm_brake_gain" value="$(arg rsm_brake_gain)" />
+    <param name="rsm_terminal_margin" value="$(arg rsm_terminal_margin)" />
+    <param name="rsm_lambda" value="$(arg rsm_lambda)" />
+    <param name="rsm_gamma0" value="$(arg rsm_gamma0)" />
+    <param name="rsm_gamma_clearance_gain" value="$(arg rsm_gamma_clearance_gain)" />
+    <param name="rsm_gamma_boundary_radius" value="$(arg rsm_gamma_boundary_radius)" />
+    <param name="rsm_gamma_boundary_samples" value="$(arg rsm_gamma_boundary_samples)" />
+    <param name="rsm_guard_trigger" value="$(arg rsm_guard_trigger)" />
+    <param name="rsm_guard_brake_gain" value="$(arg rsm_guard_brake_gain)" />
+    <param name="rsm_v_pos" value="$(arg rsm_v_pos)" />
+    <param name="rsm_v_vel" value="$(arg rsm_v_vel)" />
+    <param name="rsm_v_theta" value="$(arg rsm_v_theta)" />
+    <param name="rsm_v_omega" value="$(arg rsm_v_omega)" />
+    <param name="safety_slack_weight" value="$(arg safety_slack_weight)" />
+    <param name="safety_slack_linear" value="$(arg safety_slack_linear)" />
+    <param name="safety_slack_max" value="$(arg safety_slack_max)" />
+  </node>
+
+  <node if="$(arg rviz)"
+        pkg="rviz"
+        type="rviz"
+        name="top_down"
+        args="-d $(arg rviz_config)"
+        output="log" />
+</launch>

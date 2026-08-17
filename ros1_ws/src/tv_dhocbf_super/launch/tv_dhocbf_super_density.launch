@@ -1,0 +1,80 @@
+<launch>
+  <arg name="rviz" default="true" />
+  <arg name="density" default="d3" doc="d1, d2, d3, or d4" />
+  <arg name="controller" default="proposed" />
+  <arg name="log_csv" default="" />
+  <arg name="baseline_detour_offset" default="3.6" />
+  <arg name="baseline_detour_min_points" default="700" />
+  <arg name="baseline_detour_center_width" default="0.52" />
+  <arg name="baseline_detour_center_min_points" default="800" />
+  <arg name="d_min" default="0.08" />
+  <arg name="safety_slack_weight" default="15000.0" />
+  <arg name="safety_slack_linear" default="70.0" />
+  <arg name="safety_slack_max" default="0.24" />
+
+  <include file="$(find tv_dhocbf_super)/launch/tv_dhocbf_click.launch">
+    <arg name="rviz" value="$(arg rviz)" />
+    <arg name="rviz_config" value="$(find tv_dhocbf_super)/rviz/yopo_forest.rviz" />
+    <arg name="controller" value="$(arg controller)" />
+    <arg name="log_csv" value="$(arg log_csv)" />
+    <arg name="sim_config" value="tvdhocbf_super_density_$(arg density).yaml" />
+    <arg name="goal_x" value="0.0" />
+    <arg name="goal_y" value="45.0" />
+    <arg name="goal_z" value="1.5" />
+    <arg name="control_rate" value="10.0" />
+    <arg name="visual_rate" value="15.0" />
+    <arg name="ipopt_max_iter" value="55" />
+    <arg name="show_ground_plane" value="false" />
+    <arg name="ground_center_x" value="0.0" />
+    <arg name="ground_center_y" value="-2.5" />
+    <arg name="ground_size_x" value="18.0" />
+    <arg name="ground_size_y" value="112.0" />
+    <arg name="ground_alpha" value="0.58" />
+    <arg name="guide_line_width" value="0.035" />
+    <arg name="guide_line_alpha" value="0.36" />
+    <arg name="executed_line_width" value="0.48" />
+    <arg name="executed_line_alpha" value="1.0" />
+    <arg name="nmpc_dt" value="0.10" />
+    <arg name="local_range" value="7.0" />
+    <arg name="near_ignore" value="0.62" />
+    <arg name="max_obstacles" value="10" />
+    <arg name="obstacle_grid" value="0.46" />
+    <arg name="obstacle_radius" value="0.11" />
+    <arg name="path_margin" value="0.26" />
+    <arg name="path_boundary_padding" value="0.0" />
+    <arg name="path_center_weight" value="0.070" />
+    <arg name="path_center_deadband" value="0.22" />
+    <arg name="baseline_path_margin_extra" value="0.18" />
+    <arg name="baseline_global_path_extent_extra" value="4.5" />
+    <arg name="baseline_detour_offset" value="$(arg baseline_detour_offset)" />
+    <arg name="baseline_detour_min_points" value="$(arg baseline_detour_min_points)" />
+    <arg name="baseline_detour_center_width" value="$(arg baseline_detour_center_width)" />
+    <arg name="baseline_detour_center_min_points" value="$(arg baseline_detour_center_min_points)" />
+    <arg name="log_rsm_eval_certificate" value="true" />
+    <arg name="global_path_extent" value="12.0" />
+    <arg name="max_cloud_points" value="3600" />
+    <arg name="max_global_cloud_points" value="120000" />
+    <arg name="v_max" value="5.0" />
+    <arg name="a_max" value="8.0" />
+    <arg name="d_min" value="$(arg d_min)" />
+    <arg name="confidence_inflation" value="0.040" />
+    <arg name="horizon_inflation_growth" value="0.003" />
+    <arg name="body_constraint_samples" value="10" />
+    <arg name="rsm_gamma_boundary_samples" value="3" />
+    <arg name="rsm_reference_shaping" value="true" />
+    <arg name="rsm_reference_shaping_gain" value="0.10" />
+    <arg name="rsm_reference_shaping_influence" value="1.45" />
+    <arg name="rsm_reference_shaping_max_shift" value="0.40" />
+    <arg name="rsm_base_margin" value="0.012" />
+    <arg name="rsm_tau" value="0.035" />
+    <arg name="rsm_brake_gain" value="0.040" />
+    <arg name="rsm_terminal_margin" value="0.010" />
+    <arg name="rsm_gamma0" value="0.62" />
+    <arg name="rsm_gamma_clearance_gain" value="0.52" />
+    <arg name="rsm_v_pos" value="0.0065" />
+    <arg name="rsm_v_vel" value="0.0012" />
+    <arg name="safety_slack_weight" value="$(arg safety_slack_weight)" />
+    <arg name="safety_slack_linear" value="$(arg safety_slack_linear)" />
+    <arg name="safety_slack_max" value="$(arg safety_slack_max)" />
+  </include>
+</launch>
